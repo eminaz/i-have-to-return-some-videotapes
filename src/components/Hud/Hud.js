@@ -56,9 +56,24 @@ export default createPureComponent({
         allowedDirections.push('left')
       }
       console.log('preDirection, allowedDirections ', preDirection, allowedDirections)
-      const direction = allowedDirections.indexOf(preDirection) !== -1 && Math.random() < 0.5 ?
+      let direction = allowedDirections.indexOf(preDirection) !== -1 && Math.random() < 0.5 ?
           preDirection
         : allowedDirections[Math.floor(allowedDirections.length * Math.random())]
+
+        if(get(neighbors, 'up') === 'tape') {
+          direction = 'up'
+        }
+        if(get(neighbors, 'down') === 'tape') {
+          direction = 'down'
+        }
+        if(get(neighbors, 'right') === 'tape') {
+          direction = 'right'
+        }
+        if(get(neighbors, 'left') === 'tape') {
+          direction = 'left'
+        }
+
+
       this.props.onTick(direction)
     }, 0.01);
   },
