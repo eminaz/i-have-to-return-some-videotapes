@@ -43,6 +43,7 @@ const reducer = (state = initialState, action) => {
 export default function createStore() {
   return compose(
     applyMiddleware(thunk),
-    reduxReactRouter({ createHistory: createHistoryWithBasename, routerStateSelector })
+    reduxReactRouter({ createHistory: createHistoryWithBasename, routerStateSelector }),
+    window.devToolsExtension ? window.devToolsExtension() : f => f
   )(createReduxStore)(reducer);
 };

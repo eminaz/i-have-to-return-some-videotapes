@@ -35,7 +35,7 @@ export default createPureComponent({
   },
 
   componentDidMount() {
-    this.interval = setInterval(this.props.onTick, 1000);
+    this.interval = setInterval(this.props.onTick, 100);
   },
 
   componentWillUnmount() {

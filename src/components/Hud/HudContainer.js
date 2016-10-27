@@ -11,6 +11,9 @@ import { initialState } from 'state/initialState';
 
 import { toUpdateTime } from 'state/actions/updateTime';
 
+import { toMove } from 'state/actions/move';
+
+
 import Hud from 'components/Hud/Hud';
 
 function mapStateToProps(state) {
@@ -28,7 +31,8 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return {
     onTick() {
-      dispatch(toUpdateTime());
+      //dispatch(toUpdateTime());
+      dispatch(toMove('up'))
     }
   };
 };
