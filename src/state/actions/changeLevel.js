@@ -47,6 +47,7 @@ export function reduce(state, action) {
     level.setEntities(Immutable.fromJS(entities)),
     level.setGrounds(Immutable.fromJS(grounds)),
     level.setNumTapesTotal(numTapesTotal),
+    level.setVisitedEntities(entities),
     reset
   )(state);
 };

@@ -24,13 +24,21 @@ function mapStateToProps(state) {
 
   //todo: bad practice, please change
   //console.log('~~ ', state.toJS().level.entities[playerRow][playerCol])
-  const entities = state.toJS().level.entities
+  const stateJS = state.toJS()
+  const entities = stateJS.level.entities
+  const visited = stateJS.level.visitedEntities
 
   const neighbors = {
     left: get(entities, `${playerRow}.${playerCol-1}.type`),
     right: get(entities, `${playerRow}.${playerCol+1}.type`),
     up: get(entities, `${playerRow-1}.${playerCol}.type`),
     down: get(entities, `${playerRow+1}.${playerCol}.type`),
+  }
+  const visitedNeighbors = {
+    left: get(visited, `${playerRow}.${playerCol-1}`),
+    right: get(visited, `${playerRow}.${playerCol+1}`),
+    up: get(visited, `${playerRow-1}.${playerCol}`),
+    down: get(visited, `${playerRow+1}.${playerCol}`),
   }
   const direction = state.get('player').get('direction')
 
@@ -43,7 +51,8 @@ function mapStateToProps(state) {
     powerups: immutableToJs(state.get('powerups')),
     time: state.get('time'),
     neighbors,
-    direction
+    direction,
+    visitedNeighbors
   };
 }
 

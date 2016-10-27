@@ -1,6 +1,7 @@
 import compact from 'lodash/array/compact';
 import curry from 'lodash/function/curry';
 import flow from 'lodash/function/flow';
+import merge from 'lodash/merge'
 
 import clamp from 'utils/clamp';
 
@@ -61,13 +62,14 @@ export function reduce(state, { direction }) {
   const type = esOccupado && entity.get('type');
 
   const move           = (s) => player.setCoords(newCol, newRow, s);
+  const test           = (s) => s.set('test', 'testing')
   const moveBack       = (s) => player.setCoords(col, row, s);
   const orient         = (s) => player.setDirection(newDir, s);
   const win            = (s) => s.set('hasWon', true);
   const removeEntity   = (s) => level.setEntityPropAt(newCol, newRow, 'type', 'empty', s);
   const incrementTapes = (s) => s.update('numTapes', (num) => num + 1);
   const addPowerup     = (s) => s.update('powerups', (ps) => ps.push(type));
-  const ghostify       = (s) => level.setEntityPropAt(newCol, newRow, 'type', 'ghost', s);
+  const ghostify       = (s) => level.setEntityPropAt(newRow, newRow, 'type', 'ghost', s);
   const collect        = (s) => (type === 'tape') ? incrementTapes(s) : addPowerup(s);
   const hurt           = (s) => s.update('health', (h) => h + 1);
   const dieIfUnhealthy = (s) => (s.get('health') <= 0) ? flow(die, reset)(s) : s;
@@ -76,8 +78,15 @@ export function reduce(state, { direction }) {
     return (esOccupado && condition(s, entity)) ? update(s) : s;
   });
 
+  //console.log('~~~ ', level.getVisitedEntities(state))
+  let visited = merge({},  level.getVisitedEntities(state))
+  visited[newRow][newCol] = 'visited'
+
+  //console.log('~~~ ', visited)
+
   return flow(
     move,
+    test,
     orient,
     whenEntity(canWin, win),
     whenEntity(canDestroy, removeEntity),
@@ -85,7 +94,8 @@ export function reduce(state, { direction }) {
     whenEntity(canDie, ghostify),
     whenEntity(canBlock, moveBack),
     whenEntity(canKill, hurt),
-    dieIfUnhealthy
+    dieIfUnhealthy,
+    level.setVisitedEntities(visited),
   )(state);
 
 };

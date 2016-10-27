@@ -38,8 +38,9 @@ export default createPureComponent({
 
   componentDidMount() {
     this.interval = setInterval(() => {
-      console.log(this.props)
+      //console.log(this.props)
       const neighbors = this.props.neighbors
+      const visitedNeighbors = this.props.visitedNeighbors
       const preDirection = this.props.direction
       //console.log('neighbors ', neighbors)
       let allowedDirections = []
@@ -55,27 +56,38 @@ export default createPureComponent({
       if(get(neighbors, 'left') === 'empty') {
         allowedDirections.push('left')
       }
-      console.log('preDirection, allowedDirections ', preDirection, allowedDirections)
+      //console.log('preDirection, allowedDirections ', preDirection, allowedDirections)
       let direction = allowedDirections.indexOf(preDirection) !== -1 && Math.random() < 0.5 ?
           preDirection
         : allowedDirections[Math.floor(allowedDirections.length * Math.random())]
 
-        if(get(neighbors, 'up') === 'tape') {
-          direction = 'up'
-        }
-        if(get(neighbors, 'down') === 'tape') {
-          direction = 'down'
-        }
-        if(get(neighbors, 'right') === 'tape') {
-          direction = 'right'
-        }
-        if(get(neighbors, 'left') === 'tape') {
-          direction = 'left'
-        }
+      let i = 0
+      while(visitedNeighbors[direction] === 'visited' && i<5) {
+        //if one direction is visited, try not to visited it again
+        direction = allowedDirections.indexOf(preDirection) !== -1 && Math.random() < 0.5 ?
+            preDirection
+          : allowedDirections[Math.floor(allowedDirections.length * Math.random())]
+        i++
+      }
 
+      //always go for the tape
+      if(get(neighbors, 'up') === 'tape') {
+        direction = 'up'
+      }
+      if(get(neighbors, 'down') === 'tape') {
+        direction = 'down'
+      }
+      if(get(neighbors, 'right') === 'tape') {
+        direction = 'right'
+      }
+      if(get(neighbors, 'left') === 'tape') {
+        direction = 'left'
+      }
+      //direction = Math.random() < 0.5 ? 'left' : 'right'
+      //console.log('visitedNeighbors ', this.props.visitedNeighbors)
 
       this.props.onTick(direction)
-    }, 0.01);
+    }, 0.1);
   },
 
   componentWillUnmount() {

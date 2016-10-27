@@ -30,6 +30,7 @@ const api = buildModel(keypath, [
   groundsOwnKeypath,
   'numTapesTotal',
   'playerStart',
+  'visitedEntities'
 ]);
 
 export default Object.assign(api, {
