@@ -15,6 +15,8 @@ import HudPowerup from 'components/HudPowerup/HudPowerup'
 
 import 'components/Hud/Hud.scss';
 
+import get from 'lodash/get'
+
 export default createPureComponent({
 
   displayName: 'Hud',
@@ -35,7 +37,30 @@ export default createPureComponent({
   },
 
   componentDidMount() {
-    this.interval = setInterval(this.props.onTick, 100);
+    this.interval = setInterval(() => {
+      console.log(this.props)
+      const neighbors = this.props.neighbors
+      const preDirection = this.props.direction
+      //console.log('neighbors ', neighbors)
+      let allowedDirections = []
+      if(get(neighbors, 'up') === 'empty') {
+        allowedDirections.push('up')
+      }
+      if(get(neighbors, 'down') === 'empty') {
+        allowedDirections.push('down')
+      }
+      if(get(neighbors, 'right') === 'empty') {
+        allowedDirections.push('right')
+      }
+      if(get(neighbors, 'left') === 'empty') {
+        allowedDirections.push('left')
+      }
+      console.log('preDirection, allowedDirections ', preDirection, allowedDirections)
+      const direction = allowedDirections.indexOf(preDirection) !== -1 && Math.random() < 0.5 ?
+          preDirection
+        : allowedDirections[Math.floor(allowedDirections.length * Math.random())]
+      this.props.onTick(direction)
+    }, 0.01);
   },
 
   componentWillUnmount() {
